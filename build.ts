@@ -28,7 +28,7 @@ if (existsSync(HARVEST_INDEX_PATH)) {
     harvestIndex = {
         name: "Official Potato Field",
         info: "Official Potato Field for PotatoVerse",
-        type: "simple-field-v1",
+        type: "harvester-v1",
         zip_template: "/harvest/{slug}/{slug}.{version}.spk.zip",
         indexed_tags: ["official"],
         indexed_tag_template: "/tags/{tag}.json",
