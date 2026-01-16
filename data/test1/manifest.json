@@ -1,7 +1,0 @@
-{
-    "name": "Test",
-    "slug": "test1",
-    "type": "space_type",
-    "format": "0.1-alpha",
-    "tags": [ "simple", "test" ]
-}
