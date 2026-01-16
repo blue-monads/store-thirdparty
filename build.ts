@@ -29,7 +29,7 @@ if (existsSync(HARVEST_INDEX_PATH)) {
         name: "Official Potato Field",
         info: "Official Potato Field for PotatoVerse",
         type: "simple-field-v1",
-        zip_template: "/harvest/{slug}-{version}.zip",
+        zip_template: "/harvest/{slug}/{slug}.{version}.spk.zip",
         indexed_tags: ["official"],
         indexed_tag_template: "/tags/{tag}.json",
         potatoes: []
@@ -209,11 +209,13 @@ for (const repo of REPOS) {
                 continue;
             }
             
-            // Copy to harvest directory
-            const harvestZipName = `${slug}-${version}.zip`;
-            const harvestZipPath = join(HARVEST_DIR, harvestZipName);
+            // Copy to harvest directory with nested structure: harvest/{slug}/{slug}.{version}.spk.zip
+            const slugDir = join(HARVEST_DIR, slug);
+            mkdirSync(slugDir, { recursive: true });
+            const harvestZipName = `${slug}.${version}.spk.zip`;
+            const harvestZipPath = join(slugDir, harvestZipName);
             copyFileSync(zipPath, harvestZipPath);
-            console.log(`    ✓ Copied to harvest: ${harvestZipName}`);
+            console.log(`    ✓ Copied to harvest: ${slug}/${harvestZipName}`);
             
             // Update harvest index
             updateHarvestIndex(slug, version, potatoToml);
