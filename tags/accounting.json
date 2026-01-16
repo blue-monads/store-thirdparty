@@ -1,0 +1,40 @@
+{
+    "tag": "accounting",
+    "count": 2,
+    "potatoes": [
+        {
+            "name": "Simple Datatable",
+            "info": "Simple Datatable app",
+            "slug": "cimple-table",
+            "tags": [
+                "accounting",
+                "books"
+            ],
+            "author_name": "Bornjre",
+            "author_email": "bornjre@gmail.com",
+            "author_site": "https://github.com/bornjre",
+            "license": "MIT",
+            "current_version": "0.0.1",
+            "versions": [
+                "0.0.1"
+            ]
+        },
+        {
+            "name": "Simple Books",
+            "info": "Simple Books app",
+            "slug": "cimple-books",
+            "tags": [
+                "accounting",
+                "books"
+            ],
+            "author_name": "Bornjre",
+            "author_email": "bornjre@gmail.com",
+            "author_site": "https://github.com/bornjre",
+            "license": "MIT",
+            "current_version": "0.0.1",
+            "versions": [
+                "0.0.1"
+            ]
+        }
+    ]
+}

@@ -1,0 +1,22 @@
+{
+    "tag": "gis",
+    "count": 1,
+    "potatoes": [
+        {
+            "name": "Simple GIS",
+            "info": "Simple GIS app",
+            "slug": "cimple-gis",
+            "tags": [
+                "gis"
+            ],
+            "author_name": "Bornjre",
+            "author_email": "bornjre@gmail.com",
+            "author_site": "https://github.com/bornjre",
+            "license": "MIT",
+            "current_version": "0.0.1",
+            "versions": [
+                "0.0.1"
+            ]
+        }
+    ]
+}
