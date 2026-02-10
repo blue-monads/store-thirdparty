@@ -2,9 +2,9 @@
 
 import { existsSync, readdirSync, statSync, readFileSync, writeFileSync, copyFileSync, mkdirSync } from "fs";
 import { join, dirname } from "path";
-import { $ } from "bun";
-
-
+import { $, YAML } from "bun";
+const parseYaml = YAML.parse;
+YAML
 
 const REPOS = JSON.parse(readFileSync(join(import.meta.dir, "sources.json"), "utf-8"));
 
@@ -46,8 +46,8 @@ for (const potato of harvestIndex.potatoes) {
     }
 }
 
-// Find potato.toml files recursively
-function findPotatoTomlFiles(dir: string): string[] {
+// Find potato.yaml files recursively
+function findPotatoYamlFiles(dir: string): string[] {
     const files: string[] = [];
     
     function walk(currentDir: string) {
@@ -63,7 +63,7 @@ function findPotatoTomlFiles(dir: string): string[] {
                 // Skip .git and node_modules
                 if (entry === ".git" || entry === "node_modules") continue;
                 walk(fullPath);
-            } else if (entry === "potato.toml") {
+            } else if (entry === "potato.yaml" || entry === "potato.yml") {
                 files.push(fullPath);
             }
         }
@@ -73,10 +73,10 @@ function findPotatoTomlFiles(dir: string): string[] {
     return files;
 }
 
-// Parse TOML file (Bun has built-in TOML support)
-function parseToml(filePath: string): any {
+// Parse YAML file
+function parseYamlFile(filePath: string): any {
     const content = readFileSync(filePath, "utf-8");
-    return Bun.TOML.parse(content);
+    return parseYaml(content);
 }
 
 // Find or create potato entry in harvest index
@@ -90,20 +90,20 @@ function versionExists(potato: any, version: string): boolean {
 }
 
 // Update harvest index
-function updateHarvestIndex(slug: string, version: string, potatoToml: any) {
+function updateHarvestIndex(slug: string, version: string, potatoYaml: any) {
     let potato = findPotatoEntry(slug);
     
     if (!potato) {
         // Create new entry
         potato = {
-            name: potatoToml.name || "",
-            info: potatoToml.info || "",
+            name: potatoYaml.name || "",
+            info: potatoYaml.info || "",
             slug: slug,
-            tags: potatoToml.tags || [],
-            author_name: potatoToml.author_name || "",
-            author_email: potatoToml.author_email || "",
-            author_site: potatoToml.author_site || "",
-            license: potatoToml.license || "",
+            tags: potatoYaml.tags || [],
+            author_name: potatoYaml.author_name || "",
+            author_email: potatoYaml.author_email || "",
+            author_site: potatoYaml.author_site || "",
+            license: potatoYaml.license || "",
             current_version: version,
             versions: [version]
         };
@@ -118,13 +118,13 @@ function updateHarvestIndex(slug: string, version: string, potatoToml: any) {
         }
         potato.current_version = version;
         // Update other fields if they're missing
-        if (!potato.name && potatoToml.name) potato.name = potatoToml.name;
-        if (!potato.info && potatoToml.info) potato.info = potatoToml.info;
-        if (!potato.tags && potatoToml.tags) potato.tags = potatoToml.tags;
-        if (!potato.author_name && potatoToml.author_name) potato.author_name = potatoToml.author_name;
-        if (!potato.author_email && potatoToml.author_email) potato.author_email = potatoToml.author_email;
-        if (!potato.author_site && potatoToml.author_site) potato.author_site = potatoToml.author_site;
-        if (!potato.license && potatoToml.license) potato.license = potatoToml.license;
+        if (!potato.name && potatoYaml.name) potato.name = potatoYaml.name;
+        if (!potato.info && potatoYaml.info) potato.info = potatoYaml.info;
+        if (!potato.tags && potatoYaml.tags) potato.tags = potatoYaml.tags;
+        if (!potato.author_name && potatoYaml.author_name) potato.author_name = potatoYaml.author_name;
+        if (!potato.author_email && potatoYaml.author_email) potato.author_email = potatoYaml.author_email;
+        if (!potato.author_site && potatoYaml.author_site) potato.author_site = potatoYaml.author_site;
+        if (!potato.license && potatoYaml.license) potato.license = potatoYaml.license;
     }
 }
 
@@ -143,21 +143,21 @@ for (const repo of REPOS) {
         await $`git clone ${repo.url} ${repoDir}`.quiet();
     }
     
-    // Find all potato.toml files
-    const potatoTomlFiles = findPotatoTomlFiles(repoDir);
-    console.log(`  Found ${potatoTomlFiles.length} potato.toml file(s)`);
+    // Find all potato.yaml files
+    const potatoYamlFiles = findPotatoYamlFiles(repoDir);
+    console.log(`  Found ${potatoYamlFiles.length} potato.yaml file(s)`);
     
-    for (const tomlPath of potatoTomlFiles) {
-        const packageDir = dirname(tomlPath);
+    for (const yamlPath of potatoYamlFiles) {
+        const packageDir = dirname(yamlPath);
         const relativePath = packageDir.replace(repoDir + "/", "");
         
         console.log(`  Processing: ${relativePath}`);
         
         try {
-            // Parse potato.toml
-            const potatoToml = parseToml(tomlPath);
-            const slug = potatoToml.slug;
-            const version = potatoToml.version;
+            // Parse potato.yaml
+            const potatoYaml = parseYamlFile(yamlPath);
+            const slug = potatoYaml.slug;
+            const version = potatoYaml.version;
             
             if (!slug || !version) {
                 console.log(`    ⚠️  Skipping: missing slug or version`);
@@ -183,9 +183,9 @@ for (const repo of REPOS) {
             }
             
             // Find the output zip file
-            // Check developer.output_zip_file from potato.toml first
+            // Check developer.output_zip_file from potato.yaml first
             let zipPath: string | null = null;
-            const outputZipFile = potatoToml.developer?.output_zip_file || "package.spk.zip";
+            const outputZipFile = potatoYaml.developer?.output_zip_file || "package.spk.zip";
             
             const possibleZipPaths = [
                 join(packageDir, outputZipFile),
@@ -217,11 +217,11 @@ for (const repo of REPOS) {
             console.log(`    ✓ Copied to harvest: ${slug}/${harvestZipName}`);
             
             // Update harvest index
-            updateHarvestIndex(slug, version, potatoToml);
+            updateHarvestIndex(slug, version, potatoYaml);
             console.log(`    ✓ Updated harvest index`);
             
             // Update global tag index
-            const tags = potatoToml.tags || [];
+            const tags = potatoYaml.tags || [];
             for (const tag of tags) {
                 if (!tagIndex.has(tag)) {
                     tagIndex.set(tag, new Set());
