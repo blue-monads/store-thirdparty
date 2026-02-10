@@ -4,10 +4,9 @@ import { existsSync, readdirSync, statSync, readFileSync, writeFileSync, copyFil
 import { join, dirname } from "path";
 import { $ } from "bun";
 
-const REPOS = [{
-    name: "potato-apps",
-    url: "https://github.com/blue-monads/potato-apps",
-}]
+
+
+const REPOS = JSON.parse(readFileSync(join(import.meta.dir, "sources.json"), "utf-8"));
 
 const BUILD_DIR = join(import.meta.dir, "build");
 const HARVEST_DIR = join(import.meta.dir, "harvest");
