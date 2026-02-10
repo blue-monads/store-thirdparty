@@ -1,0 +1,25 @@
+{
+    "tag": "productivity",
+    "count": 1,
+    "potatoes": [
+        {
+            "name": "Excalidraw",
+            "info": "Excalidraw app",
+            "slug": "ext-excalidraw",
+            "tags": [
+                "productivity",
+                "drawing",
+                "whiteboard"
+            ],
+            "author_name": "Bornjre",
+            "author_email": "bornjre@gmail.com",
+            "author_site": "https://github.com/bornjre",
+            "license": "MIT",
+            "current_version": "0.0.2",
+            "versions": [
+                "0.0.1",
+                "0.0.2"
+            ]
+        }
+    ]
+}
