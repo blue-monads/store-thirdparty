@@ -4,7 +4,7 @@ import { existsSync, readdirSync, statSync, readFileSync, writeFileSync, copyFil
 import { join, dirname } from "path";
 import { $, YAML } from "bun";
 const parseYaml = YAML.parse;
-YAML
+
 
 const REPOS = JSON.parse(readFileSync(join(import.meta.dir, "sources.json"), "utf-8"));
 
